@@ -16,7 +16,7 @@ type MovieHandlers struct {
 var MovieH *MovieHandlers = &MovieHandlers{}
 
 func init() {
-	movieOperation, err := DatabaseFactory.MovieOperationFactory(config.DB_TYPE)
+	movieOperation, err := DatabaseFactory.MovieOperationsFactory(config.DB_TYPE)
 	if err != nil {
 		log.Fatal(err)
 	}
