@@ -68,18 +68,12 @@ func (movieH *MovieHandlers) DeleteMovies(c *fiber.Ctx) error {
 }
 func (movieH *MovieHandlers) CreateMovies(c *fiber.Ctx) error {
 	movieModel := &MovieModel.Movie{}
-
-	// Örneğin, gelen istek verilerini movieModel'e atayalım
 	if err := c.BodyParser(movieModel); err != nil {
 		return c.Status(400).SendString("Invalid request body")
 	}
-
-	// movieModel'i veritabanına kaydedelim
 	movieCreated, err := movieH.Db.CreateMovie(*movieModel, c)
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
-
-	log.Println(movieCreated)
 	return c.JSON(movieCreated)
 }
