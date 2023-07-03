@@ -1,1 +1,5 @@
 # movieapi
+
+GET
+DELETE 
+POST
