@@ -12,8 +12,8 @@ func AddMovieRouters(app *fiber.App) {
 	movie_routees.Post("createMovie", MovieHandlers.MovieH.CreateMovies)
 
 	// DELETE
-	movie_routees.Delete("deleteMovie", MovieHandlers.MovieH.DeleteMovies)
-	movie_routees.Delete("deleteMovie/:id", MovieHandlers.MovieH.DeleteMovies)
+	// movie_routees.Delete("deleteMovie", MovieHandlers.MovieH.DeleteMovies)
+	// movie_routees.Delete("deleteMovie/:id", MovieHandlers.MovieH.DeleteMovies)
 
 	// GET
 	movie_routees.Get("/getMovie", MovieHandlers.MovieH.GetMovie)

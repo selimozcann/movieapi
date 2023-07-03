@@ -5,7 +5,6 @@ import (
 	"movie/api/config"
 	DatabaseFactory "movie/api/database"
 	MovieModel "movie/api/models"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -27,44 +26,60 @@ func init() {
 var movieModel []MovieModel.Movie
 
 func (movieH *MovieHandlers) GetMovie(c *fiber.Ctx) error {
-	p := c.Params("id")
-	if p == "" {
-		c.SendString("Id is empty")
-	}
-	intP, _ := strconv.Atoi(p)
-	for _, mModel := range movieModel {
-		if mModel.Id == intP {
-			return c.JSON(mModel)
+	/*
+		p := c.Params("id")
+		if p == "" {
+			c.SendString("Id is empty")
 		}
-	}
+		intP, _ := strconv.Atoi(p)
+		for _, mModel := range movieModel {
+			if mModel.Id == intP {
+				return c.JSON(mModel)
+			}
+		}
+	*/
 	return c.SendString("Movie ID not found")
 }
 func (movieH *MovieHandlers) GetAllMovies(c *fiber.Ctx) error {
-	return c.JSON(movieModel)
+	mModel, err := movieH.Db.GetAllMovies(c)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	return c.Status(500).JSON(fiber.Map{"get movie is succesfully": mModel})
 }
 func updateMovie() {
 	// Update Init UpdateMovie
 }
 func (movieH *MovieHandlers) DeleteMovies(c *fiber.Ctx) error {
-	id := c.Params("id")
-	if id == "" {
-		return c.SendString("Id is empty")
-	}
-	intP, _ := strconv.Atoi(id)
-	for i, mModel := range movieModel {
-		if mModel.Id == intP {
-			movieModel = append(movieModel[:i], movieModel[i+1:]...)
-			return c.SendString("Movie deleted")
+	/*
+		id := c.Params("id")
+		if id == "" {
+			return c.SendString("Id is empty")
 		}
-	}
+		intP, _ := strconv.Atoi(id)
+		for i, mModel := range movieModel {
+			if mModel.Id == intP {
+				movieModel = append(movieModel[:i], movieModel[i+1:]...)
+				return c.SendString("Movie deleted")
+			}
+		}
+	*/
 	return c.SendString("Movie not found")
 }
 func (movieH *MovieHandlers) CreateMovies(c *fiber.Ctx) error {
-	mModel := &MovieModel.Movie{}
-	err := c.BodyParser(mModel)
-	if err != nil {
-		c.SendString(err.Error())
+	movieModel := &MovieModel.Movie{}
+
+	// Örneğin, gelen istek verilerini movieModel'e atayalım
+	if err := c.BodyParser(movieModel); err != nil {
+		return c.Status(400).SendString("Invalid request body")
 	}
-	movieModel = append(movieModel, *mModel)
-	return c.JSON(movieModel)
+
+	// movieModel'i veritabanına kaydedelim
+	movieCreated, err := movieH.Db.CreateMovie(*movieModel, c)
+	if err != nil {
+		return c.Status(500).SendString(err.Error())
+	}
+
+	log.Println(movieCreated)
+	return c.JSON(movieCreated)
 }
