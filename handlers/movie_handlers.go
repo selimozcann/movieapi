@@ -26,19 +26,16 @@ func init() {
 var movieModel []MovieModel.Movie
 
 func (movieH *MovieHandlers) GetMovie(c *fiber.Ctx) error {
-	/*
-		p := c.Params("id")
-		if p == "" {
-			c.SendString("Id is empty")
-		}
-		intP, _ := strconv.Atoi(p)
-		for _, mModel := range movieModel {
-			if mModel.Id == intP {
-				return c.JSON(mModel)
-			}
-		}
-	*/
-	return c.SendString("Movie ID not found")
+	movieID := c.Query("movieId")
+	if movieID == "" {
+		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": "Movie ID must be provided."})
+	}
+	mModel, err := movieH.Db.GetMovie(movieID, c)
+	if err != nil {
+		log.Println("mongolog")
+		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": err.Error()})
+	}
+	return c.JSON(mModel)
 }
 func (movieH *MovieHandlers) GetAllMovies(c *fiber.Ctx) error {
 	mModel, err := movieH.Db.GetAllMovies(c)
@@ -51,20 +48,16 @@ func updateMovie() {
 	// Update Init UpdateMovie
 }
 func (movieH *MovieHandlers) DeleteMovies(c *fiber.Ctx) error {
-	/*
-		id := c.Params("id")
-		if id == "" {
-			return c.SendString("Id is empty")
-		}
-		intP, _ := strconv.Atoi(id)
-		for i, mModel := range movieModel {
-			if mModel.Id == intP {
-				movieModel = append(movieModel[:i], movieModel[i+1:]...)
-				return c.SendString("Movie deleted")
-			}
-		}
-	*/
-	return c.SendString("Movie not found")
+	movieID := c.Query("movieId")
+	if movieID == "" {
+		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": "Movie ID must be provided."})
+	}
+	err := movieH.Db.DeleteMovie(movieID, c)
+	if err != nil {
+		log.Println("mongo no document result")
+		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": err.Error()})
+	}
+	return c.JSON(fiber.Map{"status": "successful", "message": "Successfully deleted post.", "is_success": true})
 }
 func (movieH *MovieHandlers) CreateMovies(c *fiber.Ctx) error {
 	movieModel := &MovieModel.Movie{}

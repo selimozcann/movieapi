@@ -39,8 +39,8 @@ func (movieOper *MovieOperationsMongo) GetMovie(movieID string, c *fiber.Ctx) (M
 	if err != nil {
 		return MovieModel.Movie{}, err
 	}
-	query := bson.D{{Key: "primitiveObjID", Value: primitiveObjID}}
-	result := movieOper.db.Db.Collection("movie").FindOne(c.Context(), query)
+	filter := bson.D{{Key: "_id", Value: primitiveObjID}}
+	result := movieOper.db.Db.Collection("movie").FindOne(c.Context(), filter)
 
 	fetchedMovie := &MovieModel.Movie{}
 	err = result.Decode(fetchedMovie)
@@ -54,8 +54,8 @@ func (movieOper *MovieOperationsMongo) CreateMovie(movieModel MovieModel.Movie, 
 	if err != nil {
 		return MovieModel.Movie{}, err
 	}
-	query := bson.D{{Key: "_id", Value: createPost.InsertedID}}
-	createRecord := movieOper.db.Db.Collection("movie").FindOne(c.Context(), query)
+	filter := bson.D{{Key: "_id", Value: createPost.InsertedID}}
+	createRecord := movieOper.db.Db.Collection("movie").FindOne(c.Context(), filter)
 	createdPost := &MovieModel.Movie{}
 
 	err = createRecord.Decode(createdPost)
@@ -70,13 +70,13 @@ func (movieOper *MovieOperationsMongo) DeleteMovie(movieID string, c *fiber.Ctx)
 		return err
 	}
 
-	query := bson.D{{Key: "_id", Value: primitiveObjID}}
-	result, err := movieOper.db.Db.Collection("movie").DeleteOne(c.Context(), &query)
+	filter := bson.D{{Key: "_id", Value: primitiveObjID}}
+	result, err := movieOper.db.Db.Collection("movie").DeleteOne(c.Context(), &filter)
 	if err != nil {
 		return err
 	}
-	if result.DeletedCount == 0 {
-		return errors.New("Delete count is zero")
+	if result.DeletedCount < 1 {
+		return errors.New("Delete count is empty")
 	}
 	return nil
 }
