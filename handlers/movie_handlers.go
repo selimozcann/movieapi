@@ -23,8 +23,6 @@ func init() {
 	MovieH.Db = movieOperation
 }
 
-var movieModel []MovieModel.Movie
-
 func (movieH *MovieHandlers) GetMovie(c *fiber.Ctx) error {
 	movieID := c.Query("movieId")
 	if movieID == "" {
