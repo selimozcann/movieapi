@@ -2,15 +2,31 @@ package handlers
 
 import (
 	"log"
+	"movie/api/config"
+	DatabaseFactory "movie/api/database"
 	MovieModel "movie/api/models"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
+type MovieHandlers struct {
+	Db DatabaseFactory.MovieOperations
+}
+
+var MovieH *MovieHandlers = &MovieHandlers{}
+
+func init() {
+	movieOperation, err := DatabaseFactory.MovieOperationFactory(config.DB_TYPE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	MovieH.Db = movieOperation
+}
+
 var movieModel []MovieModel.Movie
 
-func getMovie(c *fiber.Ctx) error {
+func (movieH *MovieHandlers) GetMovie(c *fiber.Ctx) error {
 	p := c.Params("id")
 	if p == "" {
 		c.SendString("Id is empty")
@@ -23,13 +39,13 @@ func getMovie(c *fiber.Ctx) error {
 	}
 	return c.SendString("Movie ID not found")
 }
-func getAllMovies(c *fiber.Ctx) error {
+func (movieH *MovieHandlers) GetAllMovies(c *fiber.Ctx) error {
 	return c.JSON(movieModel)
 }
 func updateMovie() {
 	// Update Init UpdateMovie
 }
-func deleteMovies(c *fiber.Ctx) error {
+func (movieH *MovieHandlers) DeleteMovies(c *fiber.Ctx) error {
 	id := c.Params("id")
 	if id == "" {
 		return c.SendString("Id is empty")
@@ -43,7 +59,7 @@ func deleteMovies(c *fiber.Ctx) error {
 	}
 	return c.SendString("Movie not found")
 }
-func createMovies(c *fiber.Ctx) error {
+func (movieH *MovieHandlers) CreateMovies(c *fiber.Ctx) error {
 	mModel := &MovieModel.Movie{}
 	err := c.BodyParser(mModel)
 	if err != nil {
@@ -51,17 +67,4 @@ func createMovies(c *fiber.Ctx) error {
 	}
 	movieModel = append(movieModel, *mModel)
 	return c.JSON(movieModel)
-}
-func InitEndpoint() {
-	app := fiber.New()
-	app.Get("/getMovies", getAllMovies)
-	app.Get("/getMovie", getMovie)
-	app.Get("/getMovie/:id", getMovie)
-
-	app.Post("/createMovies", createMovies)
-
-	app.Delete("/delete", deleteMovies)
-	app.Delete("/delete/:id", deleteMovies)
-
-	log.Fatal(app.Listen(":8000"))
 }

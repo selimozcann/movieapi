@@ -1,7 +1,16 @@
 package main
 
-import "movie/api/handlers"
+import (
+	"log"
+	"movie/api/config"
+	"movie/api/routers"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 func main() {
-	handlers.InitEndpoint()
+	app := fiber.New()
+	routers.AddMovieRouters(app)
+
+	log.Fatal(app.Listen(config.PORT))
 }
