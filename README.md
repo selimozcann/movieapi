@@ -20,17 +20,5 @@ The project will be running on port 8000. You can play with the following endpoi
 | POST /api/v1/movie/createMovie | insert movie object |
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 Let's go to golang programming
 
