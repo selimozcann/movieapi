@@ -1,22 +1,23 @@
-# movieapi
+# MovieApi
 Follow the instructions below to run the project
-
-Download the project
-
-git clone https://github.com/selimozcann/movieapi.git
-Change Directory
-
+#### Change Directory
+```sh
 cd movieapi
-Run the project
-
+```
+#### Run the project
+```sh
 go run .
-The project will be running on port 8080. You can play with the following endpoints with Postman or any rest client.
+```
 
-Endpoints	
-GET /api/v1/movie/getAllMovies get all movies
-GET /api/v1/movie/getMovie/:id	get movie with id
-DELETE / api/v1/movie/deleteMovie/:id deleteMovie
-POST /api/v1/movie/createmovie	insert movie object
+The project will be running on port 8000. You can play with the following endpoints with Postman or any rest client.
 
-Let's Go :)
+| Endpoints |  |
+| ------ | ------ |
+| GET /api/v1/movie/getAllMovies | get all movies |
+| GET /api/v1/movie/getMovie/:id | get movie with id |
+| DELETE /api/v1/movie/delete/:id| delete movie with id |
+| POST /api/v1/movie/createMovie | insert movie object |
+
+
+Enjoy and have a good day
 
