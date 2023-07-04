@@ -2,6 +2,7 @@
 Follow the instructions below to run the project
 #### Change Directory
 ```sh
+.env.exmaple change to .env
 cd movieapi
 ```
 #### Run the project
