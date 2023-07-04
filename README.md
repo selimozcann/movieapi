@@ -3,7 +3,7 @@ Follow the instructions below to run the project
 
 Download the project
 
-git clone https://gitlab.com/emrexps/movieapi.git
+git clone https://github.com/selimozcann/movieapi.git
 Change Directory
 
 cd movieapi
