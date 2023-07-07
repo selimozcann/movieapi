@@ -10,7 +10,7 @@ cd movieapi
 go run .
 ```
 
-The project will be running on port 8000. You can play with the following endpoints with Postman or any rest client.
+You can play with the following endpoints with Postman or any rest client.
 
 | Endpoints |  |
 | ------ | ------ |
