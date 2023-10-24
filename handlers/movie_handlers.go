@@ -24,13 +24,12 @@ func init() {
 }
 
 func (movieH *MovieHandlers) GetMovie(c *fiber.Ctx) error {
-	movieID := c.Query("movieId")
+	movieID := c.Query("_id")
 	if movieID == "" {
 		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": "Movie ID must be provided."})
 	}
 	mModel, err := movieH.Db.GetMovie(movieID, c)
 	if err != nil {
-		log.Println("mongolog")
 		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": err.Error()})
 	}
 	return c.JSON(mModel)
@@ -46,13 +45,12 @@ func updateMovie() {
 	// Update Init UpdateMovie
 }
 func (movieH *MovieHandlers) DeleteMovies(c *fiber.Ctx) error {
-	movieID := c.Query("movieId")
+	movieID := c.Query("_id")
 	if movieID == "" {
 		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": "Movie ID must be provided."})
 	}
 	err := movieH.Db.DeleteMovie(movieID, c)
 	if err != nil {
-		log.Println("mongo no document result")
 		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": err.Error()})
 	}
 	return c.JSON(fiber.Map{"status": "successful", "message": "Successfully deleted post.", "is_success": true})
