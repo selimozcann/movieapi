@@ -41,8 +41,8 @@ func (movieH *MovieHandlers) GetAllMovies(c *fiber.Ctx) error {
 	}
 	return c.Status(500).JSON(fiber.Map{"get movie is succesfully": mModel})
 }
-func updateMovie() {
-	// Update Init UpdateMovie
+func UpdateMovie() {
+	// TO DO Update Movie
 }
 func (movieH *MovieHandlers) DeleteMovies(c *fiber.Ctx) error {
 	movieID := c.Query("_id")
