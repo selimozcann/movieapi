@@ -18,7 +18,7 @@ You can play with the following endpoints with Postman or any rest client.
 | GET /api/v1/movie/getMovie/:id | get movie with id |
 | DELETE /api/v1/movie/delete/:id| delete movie with id |
 | POST /api/v1/movie/createMovie | insert movie object |
-| PUT /api/v1/movie/updateMovie | update movie object |
+| PUT /api/v1/movie/updateMovie/:id | update movie object |
 
 
 Let's go to golang programming
