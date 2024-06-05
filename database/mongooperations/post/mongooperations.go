@@ -2,6 +2,7 @@ package post
 
 import (
 	"errors"
+	"log"
 	Mongo "movie/api/database/mongo"
 	MovieModel "movie/api/models"
 
@@ -63,6 +64,29 @@ func (movieOper *MovieOperationsMongo) CreateMovie(movieModel MovieModel.Movie, 
 		return MovieModel.Movie{}, err
 	}
 	return *createdPost, nil
+}
+func (movieOper *MovieOperationsMongo) UpdateMovie(movieID string, c *fiber.Ctx) error {
+	primitiveObjID, err := primitive.ObjectIDFromHex(movieID)
+	if err != nil {
+		return err
+	}
+
+	update := bson.D{
+		{"$set", bson.D{
+			{"moviename", c.FormValue("moviename")},
+			{"releaseyear", c.FormValue("releaseyear")},
+			{"genre", c.FormValue("genre")},
+			{"directedby", c.FormValue("directedby")},
+		}},
+	}
+
+	r, err := movieOper.db.Db.Collection("movie").UpdateByID(c.Context(), primitiveObjID, update)
+	if err != nil {
+		log.Println("Error while updating movie: ", err)
+		return err
+	}
+	log.Println("Succesfully updated movie: ")
+	return c.JSON(r)
 }
 func (movieOper *MovieOperationsMongo) DeleteMovie(movieID string, c *fiber.Ctx) error {
 	primitiveObjID, err := primitive.ObjectIDFromHex(movieID)

@@ -12,8 +12,5 @@ func main() {
 	app := fiber.New()
 	routers.AddMovieRouters(app)
 
-	err := app.Listen(config.PORT)
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Fatal(app.Listen(config.PORT))
 }

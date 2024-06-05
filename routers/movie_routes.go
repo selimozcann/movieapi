@@ -19,4 +19,8 @@ func AddMovieRouters(app *fiber.App) {
 	movie_routees.Get("/getMovie", MovieHandlers.MovieH.GetMovie)
 	movie_routees.Get("/getMovie/:id", MovieHandlers.MovieH.GetMovie)
 	movie_routees.Get("/getAllMovies", MovieHandlers.MovieH.GetAllMovies)
+
+	// UPDATE
+	movie_routees.Put("/updateMovie", MovieHandlers.MovieH.UpdateMovie)
+	movie_routees.Put("/updateMovie/:id", MovieHandlers.MovieH.UpdateMovie)
 }

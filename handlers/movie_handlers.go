@@ -41,8 +41,24 @@ func (movieH *MovieHandlers) GetAllMovies(c *fiber.Ctx) error {
 	}
 	return c.Status(500).JSON(fiber.Map{"get movie is succesfully": mModel})
 }
-func UpdateMovie() {
-	// TO DO Update Movie
+func (movie *MovieHandlers) UpdateMovie(c *fiber.Ctx) error {
+	movieModel := &MovieModel.Movie{}
+
+	// İstek gövdesini ayrıştırma
+	if err := c.BodyParser(movieModel); err != nil {
+		return c.Status(400).SendString("Invalid request body")
+	}
+
+	// Film ID'sini sorgu parametresinden alma
+	movieID := c.Query("_id")
+	if movieID == "" {
+		return c.Status(500).JSON(fiber.Map{"status": "unsuccessful", "is_success": false, "message": "Movie ID must be provided."})
+	}
+	err := movie.Db.UpdateMovie(movieID, c)
+	if err != nil {
+		return c.Status(500).SendString(err.Error())
+	}
+	return err
 }
 func (movieH *MovieHandlers) DeleteMovies(c *fiber.Ctx) error {
 	movieID := c.Query("_id")
