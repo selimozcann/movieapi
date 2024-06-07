@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MovieOperationsMongo struct {
@@ -65,27 +66,33 @@ func (movieOper *MovieOperationsMongo) CreateMovie(movieModel MovieModel.Movie, 
 	}
 	return *createdPost, nil
 }
-func (movieOper *MovieOperationsMongo) UpdateMovie(movieID string, c *fiber.Ctx) error {
-	primitiveObjID, err := primitive.ObjectIDFromHex(movieID)
-	if err != nil {
-		return err
-	}
+func (movieOper *MovieOperationsMongo) UpdateMovie(movieId string, c *fiber.Ctx) error {
 
+	movieModel := new(MovieModel.Movie)
+	if err := c.BodyParser(movieModel); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request payload"})
+	}
+	primitiveObjID, err := primitive.ObjectIDFromHex(movieId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid movie ID"})
+	}
+	query := bson.D{{Key: "_id", Value: primitiveObjID}}
 	update := bson.D{
-		{"$set", bson.D{
-			{"moviename", c.FormValue("moviename")},
-			{"releaseyear", c.FormValue("releaseyear")},
-			{"genre", c.FormValue("genre")},
-			{"directedby", c.FormValue("directedby")},
+		{Key: "$set", Value: bson.D{
+			{Key: "moviename", Value: movieModel.MovieName},
+			{Key: "releaseyear", Value: movieModel.ReleaseYear},
+			{Key: "genre", Value: movieModel.Genre},
+			{Key: "directedby", Value: movieModel.DirectedBy},
 		}},
 	}
+	opts := options.Update()
 
-	r, err := movieOper.db.Db.Collection("movie").UpdateByID(c.Context(), primitiveObjID, update)
+	r, err := movieOper.db.Db.Collection("movie").UpdateOne(c.Context(), query, update, opts)
 	if err != nil {
 		log.Println("Error while updating movie: ", err)
-		return err
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update movie"})
 	}
-	log.Println("Succesfully updated movie: ")
+	log.Println("Successfully updated movie: ", r)
 	return c.JSON(r)
 }
 func (movieOper *MovieOperationsMongo) DeleteMovie(movieID string, c *fiber.Ctx) error {
